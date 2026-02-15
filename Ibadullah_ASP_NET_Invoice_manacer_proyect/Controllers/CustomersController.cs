@@ -63,8 +63,8 @@ public class CustomerController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var customers = await _customerService.GetCustomersListAsync();
-        return Ok(customers);
+      var customers = await _customerService.GetCustomersListAsync();
+      return Ok(customers);
     }
 }
 

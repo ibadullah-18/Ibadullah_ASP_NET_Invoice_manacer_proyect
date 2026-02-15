@@ -82,8 +82,8 @@ public class CustomerService : ICustomerService
 
     public async Task<IEnumerable<CustomerResponseDto>> GetCustomersListAsync()
     {
-        var customers = await _context.Customers.Where(r => r.DeletedAt != null).ToListAsync();
-        return customers.Select(MapToResponseDto);
+        var custamers = await _context.Customers.Where(c => c.DeletedAt == null).ToListAsync();
+        return custamers.Select(MapToResponseDto);
     }
 
     private CustomerResponseDto MapToResponseDto(Customer customer)
@@ -95,7 +95,7 @@ public class CustomerService : ICustomerService
             Address = customer.Address,
             Email = customer.Email,
             PhoneNumber = customer.PhoneNumber,
-                CreatedAt = customer.CreatedAt
+            CreatedAt = customer.CreatedAt
         };
     }
 

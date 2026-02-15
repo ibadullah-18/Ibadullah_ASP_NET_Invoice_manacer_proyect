@@ -22,8 +22,8 @@ builder.Services.AddSwaggerGen(
             },
             License = new OpenApiLicense
             {
-                Name = "MIT License",
-                Url = new Uri("https://opensource.org/licenses/MIT")
+                Name = "Instegram",
+                Url = new Uri("https://www.instagram.com/mt_ibadullah_?igsh=dGFlOWlnMXRjenky&utm_source=qr\r\n ")
             }
 
 
