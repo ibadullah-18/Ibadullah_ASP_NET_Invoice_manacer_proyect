@@ -77,13 +77,10 @@ public class InvoiceController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {       
-        var invoices = await _invoiceService.GetInvoicesListAsync();
-        return Ok(invoices);
+    public async Task<IActionResult> GetAll([FromQuery] InvoiceQueryDto query)
+    {
+        var result = await _invoiceService.GetInvoicesListAsync(query);
+        return Ok(result);
     }
-
-
-
 
 }

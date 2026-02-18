@@ -1,4 +1,5 @@
 ﻿using Ibadullah_ASP_NET_Invoice_manacer_proyect.Dtos.Invoice;
+using Ibadullah_ASP_NET_Invoice_manacer_proyect.Entities;
 
 namespace Ibadullah_ASP_NET_Invoice_manacer_proyect.Services.Interfaces;
 
@@ -10,5 +11,6 @@ public interface IInvoiceService
     Task<bool> DeleteInvoiceAsync(Guid id);
     Task<bool> ArchiveInvoiceAsync(Guid id);
     Task<InvoiceResponseDto?> GetInvoiceByIdAsync(Guid id);
-    Task<List<InvoiceResponseDto>> GetInvoicesListAsync();
+    Task<PagedResponse<InvoiceResponseDto>> GetInvoicesListAsync(InvoiceQueryDto query);
+
 }

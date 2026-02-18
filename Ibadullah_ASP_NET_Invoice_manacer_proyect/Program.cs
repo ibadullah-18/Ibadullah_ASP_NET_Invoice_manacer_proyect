@@ -1,10 +1,21 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Ibadullah_ASP_NET_Invoice_manacer_proyect.Data;
 using Ibadullah_ASP_NET_Invoice_manacer_proyect.Services;
 using Ibadullah_ASP_NET_Invoice_manacer_proyect.Services.Interfaces;
+using Ibadullah_ASP_NET_Invoice_manacer_proyect.Validators;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateInvoiceDtoValidator>();
+
+
 
 
 builder.Services.AddSwaggerGen(

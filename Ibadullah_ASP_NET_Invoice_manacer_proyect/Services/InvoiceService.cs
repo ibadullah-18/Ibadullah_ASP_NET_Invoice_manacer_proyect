@@ -163,4 +163,77 @@ public class InvoiceService : IInvoiceService
             }).ToList()
         };
     }
+
+    public async Task<PagedResponse<InvoiceResponseDto>> GetInvoicesListAsync(InvoiceQueryDto query)
+{
+    var invoices = _context.Invoices.Include(i => i.Rows).AsQueryable();
+
+    if (query.CustomerId.HasValue)
+        invoices = invoices.Where(x => x.CustomerId == query.CustomerId.Value);
+
+    if (query.StartDateFrom.HasValue)
+        invoices = invoices.Where(x => x.StartDate >= query.StartDateFrom.Value);
+
+    if (query.StartDateTo.HasValue)
+        invoices = invoices.Where(x => x.StartDate <= query.StartDateTo.Value);
+    if(!string.IsNullOrEmpty(query.Status))
+        invoices = invoices.Where(x => x.Status.ToString().Equals(query.Status, StringComparison.OrdinalIgnoreCase));
+
+        if (!string.IsNullOrWhiteSpace(query.OrderBy))
+    {
+        switch (query.OrderBy.ToLower())
+        {
+            case "startdate":
+                invoices = query.IsDescending
+                    ? invoices.OrderByDescending(x => x.StartDate)
+                    : invoices.OrderBy(x => x.StartDate);
+                break;
+            case "enddate":
+                invoices = query.IsDescending
+                    ? invoices.OrderByDescending(x => x.EndDate)
+                    : invoices.OrderBy(x => x.EndDate);
+                break;
+            case "createdat":
+            default:
+                invoices = query.IsDescending
+                    ? invoices.OrderByDescending(x => x.CreatedAt)
+                    : invoices.OrderBy(x => x.CreatedAt);
+                break;
+        }
+    }
+
+    var totalCount = await invoices.CountAsync();
+
+    var data = await invoices
+        .Skip((query.PageNumber - 1) * query.PageSize)
+        .Take(query.PageSize)
+        .Select(i => new InvoiceResponseDto
+        {
+            Id = i.Id,
+            CustomerId = i.CustomerId,
+            StartDate = i.StartDate,
+            EndDate = i.EndDate,
+            Comment = i.Comment,
+            Status = i.Status.ToString(),
+            CreatedAt = i.CreatedAt,
+            Rows = i.Rows.Select(r => new InvoiceRowResponseDto
+            {
+                Service = r.Service,
+                Quantity = r.Quantity,
+                Amount = r.Amount,
+                Sum = r.Quantity * r.Amount
+            }).ToList(),
+            TotalSum = i.Rows.Sum(r => r.Quantity * r.Amount)
+        })
+        .ToListAsync();
+
+    return new PagedResponse<InvoiceResponseDto>
+    {
+        TotalCount = totalCount,
+        PageNumber = query.PageNumber,
+        PageSize = query.PageSize,
+        Data = data
+    };
+}
+
 }
