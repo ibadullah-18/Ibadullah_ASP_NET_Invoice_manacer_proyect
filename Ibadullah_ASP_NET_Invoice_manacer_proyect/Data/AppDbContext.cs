@@ -18,6 +18,10 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<User>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
         modelBuilder.Entity<Customer>()
             .HasMany(c => c.Invoices)
             .WithOne(i => i.Customer)
@@ -27,8 +31,9 @@ public class AppDbContext : DbContext
             .HasMany(i => i.Rows)
             .WithOne(r => r.Invoice)
             .HasForeignKey(r => r.InvoiceId);
+
         modelBuilder.Entity<Customer>()
-          .HasQueryFilter(c => c.DeletedAt == null);
+            .HasQueryFilter(c => c.DeletedAt == null);
 
         modelBuilder.Entity<Invoice>()
             .HasQueryFilter(i => i.DeletedAt == null);
