@@ -9,10 +9,12 @@ namespace Ibadullah_ASP_NET_Invoice_manacer_proyect.Controllers;
 public class InvoiceController : ControllerBase
 {
     private readonly IInvoiceService _invoiceService;
+    private readonly IInvoiceDocumentService _invoiceDocumentService;
 
-    public InvoiceController(IInvoiceService invoiceService)
+    public InvoiceController(IInvoiceService invoiceService, IInvoiceDocumentService invoiceDocumentService)
     {
         _invoiceService = invoiceService;
+        _invoiceDocumentService = invoiceDocumentService;
     }
 
     [HttpPost]
@@ -81,6 +83,17 @@ public class InvoiceController : ControllerBase
     {
         var result = await _invoiceService.GetInvoicesListAsync(query);
         return Ok(result);
+    }
+
+    [HttpGet("{id}/download")]
+    public async Task<IActionResult> DownloadInvoice(Guid id, [FromQuery] string format = "pdf")
+    {
+        var result = await _invoiceDocumentService.DownloadInvoiceAsync(id, format);
+
+        if (result == null)
+            return NotFound("Invoice tapılmadı.");
+
+        return File(result.FileBytes, result.ContentType, result.FileName);
     }
 
 }

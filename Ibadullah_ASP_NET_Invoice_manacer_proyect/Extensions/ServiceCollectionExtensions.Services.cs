@@ -11,6 +11,7 @@ public static class ApplicationServiceExtension
         services.AddScoped<IInvoiceService, InvoiceService>();
         services.AddScoped<ICustomerService, CustomerService>();
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IInvoiceDocumentService, InvoiceDocumentService>();
 
         return services;
     }
